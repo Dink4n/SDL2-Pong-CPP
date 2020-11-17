@@ -26,7 +26,32 @@ RenderWindow::RenderWindow(const char* title, int width, int height)
     }
 }
 
-void RenderWindow::cleanUp()
+void RenderWindow::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+{
+    SDL_SetRenderDrawColor(m_Renderer, r, g, b, a);
+}
+
+void RenderWindow::DrawRect(const SDL_Rect* rect)
+{
+    SDL_RenderDrawRect(m_Renderer, rect);
+}
+
+void RenderWindow::FillRect(const SDL_Rect* rect)
+{
+    SDL_RenderFillRect(m_Renderer, rect);
+}
+
+void RenderWindow::Clear()
+{
+    SDL_RenderClear(m_Renderer);
+}
+
+void RenderWindow::Display()
+{
+    SDL_RenderPresent(m_Renderer);
+}
+
+void RenderWindow::CleanUp()
 {
     SDL_DestroyWindow(m_Window);
 }

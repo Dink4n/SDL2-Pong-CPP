@@ -12,7 +12,14 @@ int main(int argc, char** argv)
     RenderWindow window("Pong", 800, 600);
 
     bool gameRunning = true;
+
     SDL_Event event;
+    SDL_Rect paddle = {
+        800/2,
+        600/2,
+        100,
+        20
+    };
 
     while (gameRunning)
     {
@@ -25,9 +32,15 @@ int main(int argc, char** argv)
                     break;
             }
         }
+
+        window.SetColor(0, 0, 0);
+        window.Clear();
+        window.SetColor(255, 0, 0);
+        window.DrawFilledRectangle(&paddle);
+        window.Display();
     }
 
-    window.cleanUp();
+    window.CleanUp();
     SDL_Quit();
 
     return 0;
