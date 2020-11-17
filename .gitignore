@@ -1,3 +1,5 @@
 .cache/
 build/
+
 .nvimrc
+compile_commands.json
