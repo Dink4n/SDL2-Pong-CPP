@@ -36,7 +36,7 @@ int main(int argc, char** argv)
         window.SetColor(0, 0, 0);
         window.Clear();
         window.SetColor(255, 0, 0);
-        window.DrawFilledRectangle(&paddle);
+        window.FillRect(&paddle);
         window.Display();
     }
 
