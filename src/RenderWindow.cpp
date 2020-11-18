@@ -1,6 +1,3 @@
-#include <SDL2/SDL.h>
-#include <iostream>
-
 #include "RenderWindow.hpp"
 
 RenderWindow::RenderWindow(const char* title, int width, int height)

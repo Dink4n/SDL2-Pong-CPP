@@ -3,7 +3,6 @@
 
 #include "RenderWindow.hpp"
 
-
 int main(int argc, char** argv)
 {
     if (SDL_Init(SDL_INIT_VIDEO) > 0)
@@ -35,7 +34,7 @@ int main(int argc, char** argv)
 
         window.SetColor(0, 0, 0);
         window.Clear();
-        window.SetColor(255, 0, 0);
+        window.SetColor(255, 255, 255);
         window.FillRect(&paddle);
         window.Display();
     }
