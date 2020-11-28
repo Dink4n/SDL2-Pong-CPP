@@ -8,3 +8,5 @@ Player 1 - W S
 Player 2 - UP DOWN
 
 ## Game play
+
+<img src="https://user-images.githubusercontent.com/59721339/100517629-eff95780-31b1-11eb-9a4b-545ea98b1ef0.gif" align="center" />
