@@ -1,54 +1,129 @@
-#include "RenderWindow.hpp"
+#include <SDL2/SDL.h>
+#include <SDL2/SDL_ttf.h>
+#include <iostream>
 
-RenderWindow::RenderWindow(const char* title, int width, int height)
-    : m_Window(NULL), m_Renderer(NULL)
+#include "RenderWindow.hpp"
+#include "Entity.hpp"
+
+RenderWindow::RenderWindow(const char* p_sTitle, int p_nWidth, int p_nHeight)
+    : m_pWindow(NULL), m_pRenderer(NULL)
 {
     // Intialize window
-    m_Window = SDL_CreateWindow(title, SDL_WINDOWPOS_UNDEFINED,
-            SDL_WINDOWPOS_UNDEFINED, width, height, SDL_WINDOW_SHOWN);
+    m_pWindow = SDL_CreateWindow(p_sTitle, SDL_WINDOWPOS_UNDEFINED,
+            SDL_WINDOWPOS_UNDEFINED, p_nWidth, p_nHeight, SDL_WINDOW_SHOWN);
 
     // check if intialization succeded
-    if(!m_Window) {
+    if(!m_pWindow) {
         std::cout << "Window Failed to INIT. Error: " << SDL_GetError() <<
             std::endl;
     }
 
     // Intialize renderer
-    m_Renderer = SDL_CreateRenderer(m_Window, -1, SDL_RENDERER_ACCELERATED);
+    m_pRenderer = SDL_CreateRenderer(m_pWindow, -1, SDL_RENDERER_ACCELERATED);
 
     // check if intialization succeded
-    if (!m_Renderer) {
+    if (!m_pRenderer) {
         std::cout << "Renderer Failed to INIT. Error: " << SDL_GetError() <<
             std::endl;
     }
 }
 
-void RenderWindow::SetColor(Uint8 r, Uint8 g, Uint8 b, Uint8 a)
+void RenderWindow::CleanUp()
 {
-    SDL_SetRenderDrawColor(m_Renderer, r, g, b, a);
+    SDL_DestroyRenderer(m_pRenderer);
+    SDL_DestroyWindow(m_pWindow);
 }
 
-void RenderWindow::DrawRect(const SDL_Rect* rect)
+// ------- Getters -----------------------------------------------
+SDL_Window* RenderWindow::GetWindow() const
 {
-    SDL_RenderDrawRect(m_Renderer, rect);
+    return m_pWindow;
 }
 
-void RenderWindow::FillRect(const SDL_Rect* rect)
+SDL_Renderer* RenderWindow::GetRenderer() const
 {
-    SDL_RenderFillRect(m_Renderer, rect);
+    return m_pRenderer;
+}
+
+int RenderWindow::GetDisplayIndex() const
+{
+    return SDL_GetWindowDisplayIndex(m_pWindow);
+}
+
+int RenderWindow::GetRefreshRate() const
+{
+    SDL_DisplayMode displayMode;
+
+    int iDisplayIndex = GetDisplayIndex();
+
+    // Fill `displayMode` with Display information
+    SDL_GetDisplayMode(iDisplayIndex, 0, &displayMode);
+
+    return displayMode.refresh_rate;
+}
+// ---------------------------------------------------------------
+
+
+// ----- Fonts ---------------------------------------------------
+TTF_Font* RenderWindow::CreateFont(const char* p_FilePath, int p_PtSize)
+{
+    TTF_Font* pFont = TTF_OpenFont(p_FilePath, p_PtSize);;
+
+    if (!pFont)
+        std::cout << "Failed to load font. Error: " << TTF_GetError() <<
+            std::endl;
+
+    return pFont;
+}
+
+void RenderWindow::RenderText(TTF_Font* p_pFont, const char* p_Text, SDL_Color&
+        p_Color)
+{
+    SDL_Surface* pTextSurface = TTF_RenderText_Solid(p_pFont, p_Text, p_Color);
+    SDL_Texture* pTexture;
+
+    if(!pTextSurface) {
+        std::cout << "Failed to render text. Error: " << TTF_GetError() <<
+            std::endl;
+    } else {
+        pTexture = SDL_CreateTextureFromSurface(m_pRenderer, pTextSurface);
+        SDL_DestroyTexture(pTexture);
+        SDL_FreeSurface(pTextSurface);
+    }
+}
+
+void RenderWindow::DestroyFont(TTF_Font* p_pFont)
+{
+    TTF_CloseFont(p_pFont);
+    p_pFont = NULL;
+}
+// -------------------------------------------------------------
+
+// ----- Meat --------------------------------------------------
+void RenderWindow::SetColor(int p_R, int p_G, int p_B, int p_A)
+{
+    SDL_SetRenderDrawColor(m_pRenderer, p_R, p_G, p_B, p_A);
 }
 
 void RenderWindow::Clear()
 {
-    SDL_RenderClear(m_Renderer);
+    SDL_RenderClear(m_pRenderer);
+}
+
+void RenderWindow::Render(Entity* p_Entity)
+{
+    SDL_Rect entity = {
+        (int)p_Entity->GetX(),
+        (int)p_Entity->GetY(),
+        (int)p_Entity->GetWidth(),
+        (int)p_Entity->GetHeight()
+    };
+
+    SDL_RenderFillRect(m_pRenderer, &entity);
 }
 
 void RenderWindow::Display()
 {
-    SDL_RenderPresent(m_Renderer);
+    SDL_RenderPresent(m_pRenderer);
 }
-
-void RenderWindow::CleanUp()
-{
-    SDL_DestroyWindow(m_Window);
-}
+// -------------------------------------------------------------

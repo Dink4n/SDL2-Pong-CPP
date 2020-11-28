@@ -24,7 +24,7 @@ file (GLOB SOURCES "${PROJECT_SOURCE_DIR}/src/*.cpp")
 add_executable(${PROJECT_NAME} ${SOURCES})
 
 # link libraries
-target_link_libraries(${PROJECT_NAME} SDL2 SDL2main)
+target_link_libraries(${PROJECT_NAME} SDL2 SDL2main SDL2_ttf)
 
 # set the include directory
 target_include_directories(${PROJECT_NAME} PRIVATE "${PROJECT_SOURCE_DIR}/include")

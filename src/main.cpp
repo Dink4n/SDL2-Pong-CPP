@@ -1,46 +1,36 @@
 #include <SDL2/SDL.h>
-#include <iostream>
+#include <SDL2/SDL_ttf.h>
 
-#include "RenderWindow.hpp"
+#include "Game.hpp"
 
-int main(int argc, char** argv)
+const int g_ScreenWidth = 800;
+const int g_ScreenHeight = 600;
+
+Game game;
+RenderWindow* pWindow;
+
+void Init()
 {
     if (SDL_Init(SDL_INIT_VIDEO) > 0)
         std::cout << "SDL_Init has Failed. Error: " << SDL_GetError() << std::endl;
 
-    RenderWindow window("Pong", 800, 600);
+    if(TTF_Init()==-1)
+        std::cout << "TTF_Init has Failed. Error: " <<  TTF_GetError() << std::endl;
 
-    bool gameRunning = true;
+    pWindow = new RenderWindow("Pong", g_ScreenWidth, g_ScreenHeight);
+    game.Init(pWindow);
+}
 
-    SDL_Event event;
-    SDL_Rect paddle = {
-        800/2,
-        600/2,
-        100,
-        20
-    };
+int main(int argc, char** argv)
+{
 
-    while (gameRunning)
-    {
-        while (SDL_PollEvent(&event))
-        {
-            switch (event.type)
-            {
-                case SDL_QUIT:
-                    gameRunning = false;
-                    break;
-            }
-        }
+    Init();
 
-        window.SetColor(0, 0, 0);
-        window.Clear();
-        window.SetColor(255, 255, 255);
-        window.FillRect(&paddle);
-        window.Display();
-    }
+    game.Run();
 
-    window.CleanUp();
-    SDL_Quit();
+    game.CleanUp();
+
+    delete pWindow;
 
     return 0;
 }
